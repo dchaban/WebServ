@@ -1,7 +1,7 @@
 package servlets;
 
-import accounts.AccountService;
 import accounts.UserProfile;
+import dbService.DBService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,10 +11,10 @@ import java.io.IOException;
 
 public class SignUpServlet extends HttpServlet {
 
-    private final AccountService accountService;
+    private final DBService dbService;
 
-    public SignUpServlet(AccountService accountService) {
-        this.accountService = accountService;
+    public SignUpServlet(DBService dbService) {
+        this.dbService = dbService;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class SignUpServlet extends HttpServlet {
             return;
         }
         UserProfile userProfile = password == null ? new UserProfile(login) :
-                new UserProfile(login, password, login + "@gmail.com");
-        accountService.addNewUser(userProfile);
+                new UserProfile(login, password);
+        dbService.addUser(userProfile);
     }
 }

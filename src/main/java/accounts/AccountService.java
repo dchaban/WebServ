@@ -1,35 +1,24 @@
 package accounts;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 
 public class AccountService {
-    private final Map<String, UserProfile> loginToProfile;
-    private final Map<String, UserProfile> sessionIdToProfile;
+    private Session session;
 
-    public AccountService() {
-        loginToProfile = new HashMap<>();
-        sessionIdToProfile = new HashMap<>();
+    public AccountService(Session session) {
+        this.session = session;
     }
 
-    public void addNewUser(UserProfile userProfile) {
-        loginToProfile.put(userProfile.getLogin(), userProfile);
+    public long addUser(UserProfile userProfile) {
+        return (Long) session.save(userProfile);
     }
 
     public UserProfile getUserByLogin(String login) {
-        return loginToProfile.get(login);
+        Criteria criteria = session.createCriteria(UserProfile.class);
+        return (UserProfile) criteria.add(Restrictions.eq("login", login)).uniqueResult();
     }
 
-    public UserProfile getUserBySessionId(String sessionId) {
-        return sessionIdToProfile.get(sessionId);
-    }
-
-    public void addSession(String sessionId, UserProfile userProfile) {
-        sessionIdToProfile.put(sessionId, userProfile);
-    }
-
-    public void deleteSession(String sessionId) {
-        sessionIdToProfile.remove(sessionId);
-    }
 }
